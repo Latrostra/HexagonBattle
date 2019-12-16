@@ -11,6 +11,8 @@ public class HexGrid : MonoBehaviour
     [SerializeField] private Text _cellLabelPrefab;
     [SerializeField] private HexCell _cellPrefab;
 
+    [SerializeField] private Color defaultColor = Color.white;
+
     private HexCell[] cells;
     private Canvas gridCanvas;
     private HexMesh hexMesh;
@@ -27,29 +29,18 @@ public class HexGrid : MonoBehaviour
             }
         }
     }
-
     private void Start()
     {
         hexMesh.Triangulate(cells);
     }
-    private void Update()
-    {
-        if (Input.GetMouseButton(0)) {
-            HandleInput();
-        }
-    }
-    private void HandleInput()
-    {
-        Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(inputRay, out hit)) {
-            TouchCell(hit.point);
-        }
-    }
-    private void TouchCell(Vector3 position)
+    public void ColorCell(Vector3 position, Color color)
     {
         position = transform.InverseTransformPoint(position);
         HexCoordinates coordinates = HexCoordinates.FromPostion(position);
+        int index = coordinates.X + coordinates.Z * _width + coordinates.Z / 2;
+        HexCell cell = cells[index];
+        cell.color = color;
+        hexMesh.Triangulate(cells);
         Debug.Log("touched at " + coordinates.ToString());
     }
     private void CreateCell(int x, int z, int i)
@@ -60,6 +51,7 @@ public class HexGrid : MonoBehaviour
         cell.transform.SetParent(transform, false);
         cell.transform.localPosition = position;
         cell.coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
+        cell.color = defaultColor;
 
         Text label = Instantiate<Text>(_cellLabelPrefab);
         label.rectTransform.SetParent(gridCanvas.transform, false);

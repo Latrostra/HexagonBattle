@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ public class HexMesh : MonoBehaviour
     private List<Vector3> vertices;
     private List<int> triangles;
     private MeshCollider meshCollider;
+    private List<Color> colors;
 
 
     private void Awake()
@@ -17,6 +19,7 @@ public class HexMesh : MonoBehaviour
         GetComponent<MeshFilter>().mesh = hexMesh = new Mesh();
         hexMesh.name = "Hex Mesh";
         vertices = new List<Vector3>();
+        colors = new List<Color>();
         triangles = new List<int>();
     }
 
@@ -24,11 +27,13 @@ public class HexMesh : MonoBehaviour
     {
         hexMesh.Clear();
         vertices.Clear();
+        colors.Clear();
         triangles.Clear();
         for(int i = 0; i < cells.Length; i++) {
             Triangulate(cells[i]);
         }
         hexMesh.vertices = vertices.ToArray();
+        hexMesh.colors = colors.ToArray();
         hexMesh.triangles = triangles.ToArray();
         hexMesh.RecalculateNormals();
         meshCollider.sharedMesh = hexMesh;
@@ -41,7 +46,16 @@ public class HexMesh : MonoBehaviour
             AddTriangle(center, 
             center + HexMetric.corners[i], 
             center + HexMetric.corners[i + 1]);
+            
+        AddTriangleColor(cell.color);
         }
+    }
+
+    private void AddTriangleColor(Color color)
+    {
+        colors.Add(color);
+        colors.Add(color);
+        colors.Add(color);
     }
 
     private void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3)
