@@ -56,6 +56,20 @@ public class HexGrid : MonoBehaviour
         if (x > 0) {
             cell.SetNeighbour(HexDirection.W, cells[i - 1]);
         }
+        if (z > 0) {
+            if ((z & 1) == 0) {
+                cell.SetNeighbour(HexDirection.SE, cells[i - _width]);
+                if (x > 0) {
+                    cell.SetNeighbour(HexDirection.SW, cells[i - _width - 1]);
+                }
+            }
+            else {
+                cell.SetNeighbour(HexDirection.SW, cells[i - _width]);
+                if (x < _width - 1) {
+                    cell.SetNeighbour(HexDirection.SE, cells[i - _width + 1]);
+                }
+            }
+        }
 
         Text label = Instantiate<Text>(_cellLabelPrefab);
         label.rectTransform.SetParent(gridCanvas.transform, false);
