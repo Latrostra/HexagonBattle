@@ -61,13 +61,16 @@ public class HexMesh : MonoBehaviour
         Vector3 bridge = HexMetric.GetBridge(direction);
         Vector3 v3 = v1 + bridge;
         Vector3 v4 = v2 + bridge;
+        v3.y = v4.y = neighbour.Elevation * HexMetric.elevationStep;
 
         AddQuad(v1, v2, v3, v4);
         AddQuadColor(cell.color, neighbour.color);
 
         HexCell nextNeighbour = cell.GetNeighbour(direction.Next());
         if (direction <= HexDirection.E && nextNeighbour != null) {
-            AddTriangle(v2, v4, v2 + HexMetric.GetBridge(direction.Next()));
+            Vector3 v5 = v2 + HexMetric.GetBridge(direction.Next());
+            v5.y = nextNeighbour.Elevation * HexMetric.elevationStep;
+            AddTriangle(v2, v4, v5);
             AddTriangleColor(cell.color ,neighbour.color, nextNeighbour.color);
         }
     }
