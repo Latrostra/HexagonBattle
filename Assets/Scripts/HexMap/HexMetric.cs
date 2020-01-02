@@ -6,10 +6,9 @@ public static class HexMetric
 {
     public const float outerRadius = 10f;
     public const float innerRadius = outerRadius * 0.866025404f;
-
     public const float solidFactor = 0.75f;
     public const float blendFactor = 1f - solidFactor;
-    public const float elevationStep = 4f;
+    public const float elevationStep = 5f;
     public const int terracesPerSlope = 2;
     public const int terraceSteps = terracesPerSlope * 2 + 1;
     public const float horizontalTerraceStepSize = 1f / terraceSteps;
@@ -38,6 +37,16 @@ public static class HexMetric
     }
     public static Vector3 GetBridge(HexDirection direction) {
         return (corners[(int)direction] + corners[(int)direction + 1]) * blendFactor;
+    }
+    public static HexEdgeType GetEdgeType(int elevation1, int elevation2) {
+        if (elevation1 == elevation2) {
+            return HexEdgeType.Flat;
+        }
+        int delta = elevation2 - elevation1;
+        if (delta == 1 || delta == -1) {
+            return HexEdgeType.Slope;
+        }
+        return HexEdgeType.Cliff;
     }
     public static Vector3 TerraceLerp (Vector3 a, Vector3 b, int step) {
 		float h = step * HexMetric.horizontalTerraceStepSize;
