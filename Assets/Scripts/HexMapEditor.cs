@@ -24,7 +24,6 @@ public class HexMapEditor : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(inputRay, out hit)) {
             EditCell(hexGrid.GetCell(hit.point));
-            Debug.Log(hexGrid.GetCell(hit.point).Elevation);
         }
     }
     private void EditCell(HexCell cell) {
